@@ -1,0 +1,42 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+type Address {
+  streetAddress: String!
+  city: String!
+  state: String!
+  country: String!
+  zipCode: String!
+}
+
+input AddressInput {
+  streetAddress: String!
+  city: String!
+  state: String!
+  country: String!
+  zipCode: String!
+}
+
+type CartItem {
+  productId: String!
+  quantity: Int!
+}
+
+input CartItemInput {
+  productId: String!
+  quantity: Int!
+}
+
+type Money {
+  currencyCode: String!
+  units: Int!
+  nanos: Int!
+}
+
+type Query {
+  getQuote(address: AddressInput!, items: [CartItemInput!]!): Money!
+}
+
+type Mutation {
+  shipOrder(address: AddressInput!, items: [CartItemInput!]!): String!
+}
