@@ -1,0 +1,23 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+type Money {
+  currencyCode: String!
+  units: Int!
+  nanos: Int!
+}
+
+type Product {
+  id: String!
+  name: String!
+  description: String!
+  picture: String!
+  priceUsd: Money!
+  categories: [String!]!
+}
+
+type Query {
+  listProducts: [Product!]!
+  getProduct(id: String!): Product!
+  searchProducts(query: String!): [Product!]!
+}
