@@ -41,7 +41,11 @@ const resolvers = {
       return new Promise((resolve, reject) => {
         currencyClient.convert(
           {
-            from: from,
+            from: {
+              currency_code: from.currencyCode,
+              units: from.units,
+              nanos: from.nanos,
+            },
             to_code: toCode,
           },
           (err, response) => {

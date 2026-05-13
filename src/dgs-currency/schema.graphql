@@ -2,12 +2,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 type Money {
-  currencyCode: String!      # string currency_code
-  units: Int!                # int64 units
-  nanos: Int!                # int32 nanos
+  currencyCode: String!
+  units: Int!
+  nanos: Int!
+}
+
+input MoneyInput {                          
+  currencyCode: String!
+  units: Int!
+  nanos: Int!
 }
 
 type Query {
   getSupportedCurrencies: [String!]!
-  convert(from: Money!, toCode: String!): Money!
+  convert(from: MoneyInput!, toCode: String!): Money!
 }
