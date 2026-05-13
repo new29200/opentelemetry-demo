@@ -987,3 +987,251 @@ services:
       timeout: 10s
       retries: 10
     logging: *logging
+
+   # GraphQL Gateway
+  graphql-gateway:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-graphql-gateway
+    container_name: graphql-gateway
+    build:
+      context: ./
+      dockerfile: ${GRAPHQL_GATEWAY_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${GRAPHQL_GATEWAY_PORT}:${GRAPHQL_GATEWAY_PORT}"
+    environment:
+      - PORT=${GRAPHQL_GATEWAY_PORT}
+      - DGS_CURRENCY_URL=http://${DGS_CURRENCY_ADDR}
+      - DGS_CHECKOUT_URL=http://${DGS_CHECKOUT_ADDR}
+      - DGS_CART_URL=http://${DGS_CART_ADDR}
+      - DGS_AD_URL=http://${DGS_AD_ADDR}
+      - DGS_PRODUCT_CATALOG_URL=http://${DGS_PRODUCT_CATALOG_ADDR}
+      - DGS_PRODUCT_REVIEWS_URL=http://${DGS_PRODUCT_REVIEWS_ADDR}
+      - DGS_RECOMMENDATION_URL=http://${DGS_RECOMMENDATION_ADDR}
+      - DGS_SHIPPING_URL=http://${DGS_SHIPPING_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=graphql-gateway
+    depends_on:
+      dgs-currency:
+        condition: service_started
+      dgs-checkout:
+        condition: service_started
+      dgs-cart:
+        condition: service_started
+      dgs-ad:
+        condition: service_started
+      dgs-product-catalog:
+        condition: service_started
+      dgs-product-reviews:
+        condition: service_started
+      dgs-recommendation:
+        condition: service_started
+      dgs-shipping:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  # DGS Services
+  dgs-currency:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-currency
+    container_name: dgs-currency
+    build:
+      context: ./
+      dockerfile: ${DGS_CURRENCY_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_CURRENCY_PORT}:${DGS_CURRENCY_PORT}"
+    environment:
+      - PORT=${DGS_CURRENCY_PORT}
+      - CURRENCY_SERVICE_ADDR=${CURRENCY_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-currency
+    depends_on:
+      currency:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  dgs-checkout:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-checkout
+    container_name: dgs-checkout
+    build:
+      context: ./
+      dockerfile: ${DGS_CHECKOUT_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_CHECKOUT_PORT}:${DGS_CHECKOUT_PORT}"
+    environment:
+      - PORT=${DGS_CHECKOUT_PORT}
+      - CHECKOUT_SERVICE_ADDR=${CHECKOUT_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-checkout
+    depends_on:
+      checkout:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  dgs-cart:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-cart
+    container_name: dgs-cart
+    build:
+      context: ./
+      dockerfile: ${DGS_CART_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_CART_PORT}:${DGS_CART_PORT}"
+    environment:
+      - PORT=${DGS_CART_PORT}
+      - CART_SERVICE_ADDR=${CART_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-cart
+    depends_on:
+      cart:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  dgs-ad:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-ad
+    container_name: dgs-ad
+    build:
+      context: ./
+      dockerfile: ${DGS_AD_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_AD_PORT}:${DGS_AD_PORT}"
+    environment:
+      - PORT=${DGS_AD_PORT}
+      - AD_SERVICE_ADDR=${AD_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-ad
+    depends_on:
+      ad:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  dgs-product-catalog:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-product-catalog
+    container_name: dgs-product-catalog
+    build:
+      context: ./
+      dockerfile: ${DGS_PRODUCT_CATALOG_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_PRODUCT_CATALOG_PORT}:${DGS_PRODUCT_CATALOG_PORT}"
+    environment:
+      - PORT=${DGS_PRODUCT_CATALOG_PORT}
+      - PRODUCT_CATALOG_SERVICE_ADDR=${PRODUCT_CATALOG_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-product-catalog
+    depends_on:
+      product-catalog:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  dgs-product-reviews:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-product-reviews
+    container_name: dgs-product-reviews
+    build:
+      context: ./
+      dockerfile: ${DGS_PRODUCT_REVIEWS_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_PRODUCT_REVIEWS_PORT}:${DGS_PRODUCT_REVIEWS_PORT}"
+    environment:
+      - PORT=${DGS_PRODUCT_REVIEWS_PORT}
+      - PRODUCT_REVIEW_SERVICE_ADDR=${PRODUCT_REVIEWS_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-product-reviews
+    depends_on:
+      product-reviews:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  dgs-recommendation:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-recommendation
+    container_name: dgs-recommendation
+    build:
+      context: ./
+      dockerfile: ${DGS_RECOMMENDATION_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_RECOMMENDATION_PORT}:${DGS_RECOMMENDATION_PORT}"
+    environment:
+      - PORT=${DGS_RECOMMENDATION_PORT}
+      - RECOMMENDATION_SERVICE_ADDR=${RECOMMENDATION_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-recommendation
+    depends_on:
+      recommendation:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
+
+  dgs-shipping:
+    image: ${IMAGE_NAME}:${DEMO_VERSION}-dgs-shipping
+    container_name: dgs-shipping
+    build:
+      context: ./
+      dockerfile: ${DGS_SHIPPING_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    ports:
+      - "${DGS_SHIPPING_PORT}:${DGS_SHIPPING_PORT}"
+    environment:
+      - PORT=${DGS_SHIPPING_PORT}
+      - SHIPPING_SERVICE_ADDR=${SHIPPING_ADDR}
+      - OTEL_EXPORTER_OTLP_ENDPOINT
+      - OTEL_SERVICE_NAME=dgs-shipping
+    depends_on:
+      shipping:
+        condition: service_started
+      otel-collector:
+        condition: service_started
+    logging: *logging
