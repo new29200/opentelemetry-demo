@@ -1,0 +1,13 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+type Money {
+  currencyCode: String!      # string currency_code
+  units: Int!                # int64 units
+  nanos: Int!                # int32 nanos
+}
+
+type Query {
+  getSupportedCurrencies: [String!]!
+  convert(from: Money!, toCode: String!): Money!
+}

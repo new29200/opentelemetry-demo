@@ -1,0 +1,19 @@
+{
+  "name": "graphql-gateway",
+  "version": "1.0.0",
+  "description": "GraphQL Federation Gateway for OpenTelemetry Demo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "@apollo/gateway": "^2.7.1",
+    "@apollo/subgraph": "^2.7.1",
+    "apollo-server": "^4.9.5",
+    "graphql": "^16.8.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
