@@ -1,0 +1,14 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+type ProductReview {
+  username: String!
+  description: String!
+  score: String!
+}
+
+type Query {
+  getProductReviews(productId: String!): [ProductReview!]!
+  getAverageProductReviewScore(productId: String!): String!
+  askProductAIAssistant(productId: String!, question: String!): String!
+}
