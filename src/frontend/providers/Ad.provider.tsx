@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createContext, useContext, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import ApiGateway from '../gateways/Api.gateway';
 import { Ad, Money, Product } from '../protos/demo';
 import { useCurrency } from './Currency.provider';
+import SessionGateway from '../gateways/Session.gateway';
+import { useGetAds, useGetRecommendations } from '../gateways/graphql/hooks';
 
 interface IContext {
   recommendedProductList: Product[];
@@ -27,22 +27,10 @@ export const useAd = () => useContext(Context);
 
 const AdProvider = ({ children, productIds, contextKeys }: IProps) => {
   const { selectedCurrency } = useCurrency();
-  const { data: adList = [] } = useQuery({
-    queryKey: ['ads', contextKeys],
-    queryFn: async () => {
-      if (contextKeys.length === 0) {
-        return [];
-      } else {
-        return ApiGateway.listAds(contextKeys);
-      }
-    },
-    refetchOnWindowFocus: false,
-  });
-  const { data: recommendedProductList = [] } = useQuery({
-    queryKey: ['recommendations', productIds, 'selectedCurrency', selectedCurrency],
-    queryFn: () => ApiGateway.listRecommendations(productIds, selectedCurrency),
-    refetchOnWindowFocus: false,
-  });
+  const { userId } = SessionGateway.getSession();
+
+  const { data: adList = [] } = useGetAds(contextKeys);
+  const { data: recommendedProductList = [] } = useGetRecommendations(productIds, selectedCurrency, userId);
 
   const value = useMemo(
     () => ({

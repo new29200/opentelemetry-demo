@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createContext, useContext, useEffect, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import ApiGateway from '../gateways/Api.gateway';
 import { ProductReview } from '../protos/demo';
+import { useGetProductReviews, useGetAverageReviewScore } from '../gateways/graphql/hooks';
 
 interface IContext {
     // null = not loaded yet; [] = loaded with no reviews; array = loaded with reviews.
@@ -34,38 +33,29 @@ export const useProductReview = () => {
 
 const ProductReviewProvider = ({ children, productId }: IProps) => {
     const {
-        data,
+        data: reviewsData,
         isLoading,
         isFetching,
         isError,
         error,
         isSuccess,
-    } = useQuery<ProductReview[]>({
-        queryKey: ['productReviews', productId],
-        queryFn: () => ApiGateway.getProductReviews(productId),
-        refetchOnWindowFocus: false,
-    });
+    } = useGetProductReviews(productId);
 
-    // Use a sentinel: null while loading, [] if loaded but empty, array when loaded with data.
     const productReviews: ProductReview[] | null = isSuccess
-        ? Array.isArray(data)
-            ? data
+        ? Array.isArray(reviewsData)
+            ? reviewsData
             : []
         : null;
 
     const loading = isLoading || isFetching;
 
-    // Narrow react-query's `unknown` error to `Error | null`.
     const currentError: Error | null = isError
         ? error instanceof Error
             ? error
             : new Error('Unknown error')
         : null;
 
-    const { data: averageScore = '' } = useQuery({
-        queryKey: ['productReviewAvgScore', productId],
-        queryFn: () => ApiGateway.getAverageProductReviewScore(productId),
-    });
+    const { data: averageScore = '' } = useGetAverageReviewScore(productId);
 
     const value = useMemo(
         () => ({
