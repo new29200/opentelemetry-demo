@@ -8,7 +8,7 @@
     "dev": "node index.js"
   },
   "dependencies": {
-    "apollo-server": "^4.9.5",
+    "apollo-server": "^3.13.0",
     "graphql": "^16.8.1",
     "@apollo/subgraph": "^2.7.1",
     "@grpc/grpc-js": "^1.9.10",

@@ -5,10 +5,10 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --only=production
+COPY ./src/dgs-cart/package*.json ./
+RUN npm install
 
-COPY . .
+COPY ./src/dgs-cart .
 
 EXPOSE 4002
 
