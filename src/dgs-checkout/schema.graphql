@@ -1,0 +1,59 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+type Address {
+  streetAddress: String!
+  city: String!
+  state: String!
+  country: String!
+  zipCode: String!
+}
+
+type Money {
+  currencyCode: String!
+  units: Int!
+  nanos: Int!
+}
+
+input AddressInput {
+  streetAddress: String!
+  city: String!
+  state: String!
+  country: String!
+  zipCode: String!
+}
+
+input MoneyInput {
+  currencyCode: String!
+  units: Int!
+  nanos: Int!
+}
+
+input CreditCardInfoInput {
+  creditCardNumber: String!
+  creditCardCvv: Int!
+  creditCardExpirationYear: Int!
+  creditCardExpirationMonth: Int!
+}
+
+type CartItem {
+  productId: String!
+  quantity: Int!
+}
+
+type OrderItem {
+  item: CartItem!
+  cost: Money!
+}
+
+type OrderResult {
+  orderId: String!
+  shippingTrackingId: String!
+  shippingCost: Money!
+  shippingAddress: Address!
+  items: [OrderItem!]!
+}
+
+type Query {
+  placeOrder(userId: String!, userCurrency: String!, address: AddressInput!, email: String!, creditCard: CreditCardInfoInput!): OrderResult!
+}

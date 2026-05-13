@@ -1,0 +1,26 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+type CartItem {
+  productId: String!
+  quantity: Int!
+}
+
+input CartItemInput {
+  productId: String!
+  quantity: Int!
+}
+
+type Cart {
+  userId: String!
+  items: [CartItem!]!
+}
+
+type Query {
+  getCart(userId: String!): Cart!
+}
+
+type Mutation {
+  addItem(userId: String!, item: CartItemInput!): Boolean!
+  emptyCart(userId: String!): Boolean!
+}
