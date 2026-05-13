@@ -11,6 +11,7 @@
     "grpc:generate": "mkdir -p ./protos && protoc -I ./pb  --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_out=./protos --ts_proto_opt=outputServices=grpc-js demo.proto"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.0",
     "@bufbuild/protobuf": "^2.12.0",
     "@grpc/grpc-js": "1.14.3",
     "@openfeature/flagd-provider": "0.15.1",
@@ -41,6 +42,7 @@
     "currency-symbol-map": "5.1.0",
     "dotenv": "17.4.2",
     "dotenv-expand": "13.0.0",
+    "graphql": "^16.8.1",
     "next": "16.2.4",
     "react": "19.2.5",
     "react-dom": "19.2.5",
