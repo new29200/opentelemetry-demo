@@ -9,7 +9,7 @@ let currencyClient;
 const initGrpcClient = (currencyServiceAddr) => {
   if (currencyClient) return;
 
-  const packageDefinition = protoLoader.loadSync('../../../pb/demo.proto', {
+  const packageDefinition = protoLoader.loadSync('./pb/demo.proto', {
     keepCase: true,
     longs: String,
     enums: String,

@@ -9,7 +9,7 @@ let recommendationClient;
 const initGrpcClient = (recommendationServiceAddr) => {
   if (recommendationClient) return;
 
-  const packageDefinition = protoLoader.loadSync('../../../pb/demo.proto', {
+  const packageDefinition = protoLoader.loadSync('./pb/demo.proto', {
     keepCase: true,
     longs: String,
     enums: String,

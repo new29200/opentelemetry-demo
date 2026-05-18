@@ -4,7 +4,7 @@
 // gateways/graphql/mutations.ts
 import { gql } from '@apollo/client';
 
-// ← Mutation pour ajouter au panier
+// Mutation pour ajouter au panier
 export const ADD_TO_CART = gql`
   mutation AddToCart($userId: String!, $item: CartItemInput!, $currencyCode: String!) {
     addToCart(userId: $userId, item: $item, currencyCode: $currencyCode) {
@@ -17,7 +17,7 @@ export const ADD_TO_CART = gql`
   }
 `;
 
-// ← Mutation pour vider le panier
+// Mutation pour vider le panier
 export const EMPTY_CART = gql`
   mutation EmptyCart($userId: String!) {
     emptyCart(userId: $userId) {
@@ -30,7 +30,7 @@ export const EMPTY_CART = gql`
   }
 `;
 
-// ← Mutation pour commander
+// Mutation pour commander
 export const PLACE_ORDER = gql`
   mutation PlaceOrder($order: PlaceOrderRequestInput!, $currencyCode: String!) {
     placeOrder(order: $order, currencyCode: $currencyCode) {
@@ -51,7 +51,7 @@ export const PLACE_ORDER = gql`
   }
 `;
 
-// ← Mutation pour poser une question à l'IA
+// Mutation pour poser une question à l'IA
 export const ASK_PRODUCT_AI_ASSISTANT = gql`
   mutation AskProductAIAssistant($productId: String!, $question: String!) {
     askProductAIAssistant(productId: $productId, question: $question)

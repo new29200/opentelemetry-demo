@@ -9,6 +9,7 @@ COPY ./src/dgs-ad/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-ad .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4004
 

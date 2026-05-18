@@ -9,6 +9,7 @@ COPY ./src/dgs-product-catalog/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-product-catalog .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4005
 

@@ -9,7 +9,7 @@ let shippingClient;
 const initGrpcClient = (shippingServiceAddr) => {
   if (shippingClient) return;
 
-  const packageDefinition = protoLoader.loadSync('../../../pb/demo.proto', {
+  const packageDefinition = protoLoader.loadSync('./pb/demo.proto', {
     keepCase: true,
     longs: String,
     enums: String,

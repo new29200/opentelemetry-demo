@@ -9,6 +9,7 @@ COPY ./src/dgs-currency/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-currency .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4003
 

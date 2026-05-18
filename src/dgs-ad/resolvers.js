@@ -9,7 +9,7 @@ let adClient;
 const initGrpcClient = (adServiceAddr) => {
   if (adClient) return;
 
-  const packageDefinition = protoLoader.loadSync('../../../pb/demo.proto', {
+  const packageDefinition = protoLoader.loadSync('./pb/demo.proto', {
     keepCase: true,
     longs: String,
     enums: String,

@@ -4,7 +4,7 @@
 // gateways/graphql/queries.ts
 import { gql } from '@apollo/client';
 
-// ← Requête pour récupérer les produits
+// Requête pour récupérer les produits
 export const GET_PRODUCTS = gql`
   query ListProducts($currencyCode: String!) {
     listProducts(currencyCode: $currencyCode) {
@@ -19,7 +19,7 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
-// ← Requête pour récupérer le panier
+// Requête pour récupérer le panier
 export const GET_CART = gql`
   query GetCart($userId: String!, $currencyCode: String!) {
     getCart(userId: $userId, currencyCode: $currencyCode) {
@@ -32,7 +32,7 @@ export const GET_CART = gql`
   }
 `;
 
-// ← Requête pour récupérer les avis
+// Requête pour récupérer les avis
 export const GET_REVIEWS = gql`
   query GetProductReviews($productId: String!) {
     getProductReviews(productId: $productId) {

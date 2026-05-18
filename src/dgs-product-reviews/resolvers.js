@@ -9,7 +9,7 @@ let productReviewClient;
 const initGrpcClient = (productReviewServiceAddr) => {
   if (productReviewClient) return;
 
-  const packageDefinition = protoLoader.loadSync('../../../pb/demo.proto', {
+  const packageDefinition = protoLoader.loadSync('./pb/demo.proto', {
     keepCase: true,
     longs: String,
     enums: String,

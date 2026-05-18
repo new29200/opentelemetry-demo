@@ -9,6 +9,7 @@ COPY ./src/dgs-cart/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-cart .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4002
 

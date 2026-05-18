@@ -9,6 +9,7 @@ COPY ./src/dgs-recommendation/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-recommendation .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4007
 

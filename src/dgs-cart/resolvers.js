@@ -9,7 +9,7 @@ let cartClient;
 const initGrpcClient = (cartServiceAddr) => {
   if (cartClient) return;
 
-  const packageDefinition = protoLoader.loadSync('../../../pb/demo.proto', {
+  const packageDefinition = protoLoader.loadSync('./pb/demo.proto', {
     keepCase: true,
     longs: String,
     enums: String,

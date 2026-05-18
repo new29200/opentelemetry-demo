@@ -9,6 +9,7 @@ COPY ./src/dgs-product-reviews/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-product-reviews .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4006
 

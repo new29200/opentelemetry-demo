@@ -9,6 +9,7 @@ COPY ./src/dgs-shipping/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-shipping .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4008
 

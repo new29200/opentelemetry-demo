@@ -9,6 +9,7 @@ COPY ./src/dgs-checkout/package*.json ./
 RUN npm install
 
 COPY ./src/dgs-checkout .
+COPY ./pb/demo.proto ./pb/
 
 EXPOSE 4001
 
