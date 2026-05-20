@@ -11,13 +11,18 @@ import ApiGateway from '../gateways/Api.gateway';
 import Banner from '../components/Banner';
 import { CypressFields } from '../utils/enums/CypressFields';
 import { useCurrency } from '../providers/Currency.provider';
+import { useListProducts } from '../gateways/graphql/hooks';
 
 const Home: NextPage = () => {
   const { selectedCurrency } = useCurrency();
-  const { data: productList = [] } = useQuery({
-    queryKey: ['products', selectedCurrency],
-    queryFn: () => ApiGateway.listProducts(selectedCurrency),
-  });
+  // REST
+  //const { data: productList = [] } = useQuery({
+  //  queryKey: ['products', selectedCurrency],
+  //  queryFn: () => ApiGateway.listProducts(selectedCurrency),
+  //});
+
+  // GraphQL
+  const { data: productList = [] } = useListProducts();
 
   return (
     <Layout>
