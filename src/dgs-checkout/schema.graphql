@@ -54,6 +54,12 @@ type OrderResult {
   items: [OrderItem!]!
 }
 
-type Query {
-  placeOrder(userId: String!, userCurrency: String!, address: AddressInput!, email: String!, creditCard: CreditCardInfoInput!): OrderResult!
+type Mutation {
+  placeOrder(
+    userId: String!,
+    userCurrency: String!,
+    address: AddressInput!,
+    email: String!,
+    creditCard: CreditCardInfoInput!
+  ): OrderResult!
 }

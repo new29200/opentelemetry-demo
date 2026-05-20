@@ -2,17 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createContext, useCallback, useContext, useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import ApiGateway from '../gateways/Api.gateway';
 import { CartItem, OrderResult, PlaceOrderRequest } from '../protos/demo';
 import { IProductCart } from '../types/Cart';
 import { useCurrency } from './Currency.provider';
-import SessionGateway from '../gateways/Session.gateway';
-import {
-  useGetCart,
-  useAddToCart,
-  useEmptyCart,
-  usePlaceOrder
-} from '../gateways/graphql/hooks';
 
 interface IContext {
   cart: IProductCart;
@@ -36,23 +30,42 @@ export const useCart = () => useContext(Context);
 
 const CartProvider = ({ children }: IProps) => {
   const { selectedCurrency } = useCurrency();
-  const { userId } = SessionGateway.getSession();
   const queryClient = useQueryClient();
-
-  const { data: cart = { userId: '', items: [] } } = useGetCart(userId, selectedCurrency);
-  const addCartMutation = useAddToCart();
-  const emptyCartMutation = useEmptyCart();
-  const placeOrderMutation = usePlaceOrder();
-
-  const addItem = useCallback(
-    (item: CartItem) => addCartMutation.mutateAsync({ userId, item, currencyCode: selectedCurrency }),
-    [addCartMutation, userId, selectedCurrency]
+  const mutationOptions = useMemo(
+    () => ({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['cart'] });
+      },
+    }),
+    [queryClient]
   );
 
-  const emptyCart = useCallback(() => emptyCartMutation.mutateAsync(userId), [emptyCartMutation, userId]);
+  const { data: cart = { userId: '', items: [] } } = useQuery({
+    queryKey: ['cart', selectedCurrency],
+    queryFn: () => ApiGateway.getCart(selectedCurrency),
+  });
+  const addCartMutation = useMutation({
+    mutationFn: ApiGateway.addCartItem,
+    ...mutationOptions,
+  });
 
+  const emptyCartMutation = useMutation({
+    mutationFn: ApiGateway.emptyCart,
+    ...mutationOptions,
+  });
+
+  const placeOrderMutation = useMutation({
+    mutationFn: ApiGateway.placeOrder,
+    ...mutationOptions,
+  });
+
+  const addItem = useCallback(
+    (item: CartItem) => addCartMutation.mutateAsync({ ...item, currencyCode: selectedCurrency }),
+    [addCartMutation, selectedCurrency]
+  );
+  const emptyCart = useCallback(() => emptyCartMutation.mutateAsync(), [emptyCartMutation]);
   const placeOrder = useCallback(
-    (order: PlaceOrderRequest) => placeOrderMutation.mutateAsync({ order, currencyCode: selectedCurrency }),
+    (order: PlaceOrderRequest) => placeOrderMutation.mutateAsync({ ...order, currencyCode: selectedCurrency }),
     [placeOrderMutation, selectedCurrency]
   );
 

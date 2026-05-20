@@ -28,30 +28,44 @@ const resolvers = {
       initGrpcClient(context.productReviewServiceAddr);
 
       return new Promise((resolve, reject) => {
-        productReviewClient.getProductReviews({ product_id: productId }, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.product_reviews);
-        });
+        productReviewClient.getProductReviews(
+          { product_id: productId },
+          (err, response) => {
+            if (err) return reject(err);
+
+            resolve(response.product_reviews);
+          }
+        );
       });
     },
+
     getAverageProductReviewScore: async (_, { productId }, context) => {
       initGrpcClient(context.productReviewServiceAddr);
 
       return new Promise((resolve, reject) => {
-        productReviewClient.getAverageProductReviewScore({ product_id: productId }, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.average_score);
-        });
+        productReviewClient.getAverageProductReviewScore(
+          { product_id: productId },
+          (err, response) => {
+            if (err) return reject(err);
+
+            resolve(response.average_score);
+          }
+        );
       });
     },
+
     askProductAIAssistant: async (_, { productId, question }, context) => {
       initGrpcClient(context.productReviewServiceAddr);
 
       return new Promise((resolve, reject) => {
-        productReviewClient.askProductAIAssistant({ product_id: productId, question }, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.response);
-        });
+        productReviewClient.askProductAIAssistant(
+          { product_id: productId, question },
+          (err, response) => {
+            if (err) return reject(err);
+
+            resolve(response.response);
+          }
+        );
       });
     },
   },

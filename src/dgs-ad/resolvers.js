@@ -28,10 +28,19 @@ const resolvers = {
       initGrpcClient(context.adServiceAddr);
 
       return new Promise((resolve, reject) => {
-        adClient.getAds({ context_keys: contextKeys }, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.ads);
-        });
+        adClient.getAds(
+          { context_keys: contextKeys },
+          (err, response) => {
+            if (err) return reject(err);
+
+            resolve(
+              response.ads.map((ad) => ({
+                redirectUrl: ad.redirect_url,
+                text: ad.text,
+              }))
+            );
+          }
+        );
       });
     },
   },

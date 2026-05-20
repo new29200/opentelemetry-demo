@@ -28,10 +28,17 @@ const resolvers = {
       initGrpcClient(context.recommendationServiceAddr);
 
       return new Promise((resolve, reject) => {
-        recommendationClient.listRecommendations({ user_id: userId, product_ids: productIds }, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.product_ids);
-        });
+        recommendationClient.listRecommendations(
+          {
+            user_id: userId,
+            product_ids: productIds,
+          },
+          (err, response) => {
+            if (err) return reject(err);
+
+            resolve(response.product_ids);
+          }
+        );
       });
     },
   },

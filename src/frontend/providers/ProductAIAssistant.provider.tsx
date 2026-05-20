@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createContext, useContext, useEffect, useMemo } from 'react';
-import { MutateOptions } from '@tanstack/react-query';
-import { useAskProductAIAssistant } from '../gateways/graphql/hooks';
+import { useMutation, MutateOptions } from '@tanstack/react-query';
+import ApiGateway from '../gateways/Api.gateway';
 
 export interface AiRequestPayload {
     question: string;
@@ -38,11 +38,14 @@ interface ProductAIAssistantProviderProps {
 }
 
 const ProductAIAssistantProvider = ({ children, productId }: ProductAIAssistantProviderProps) => {
-    const mutation = useAskProductAIAssistant();
+    const mutation = useMutation<AiResponse, Error, AiRequestPayload>({
+        mutationFn: ({ question }) => ApiGateway.askProductAIAssistant(productId, question),
+    });
 
+    // Clear AI state when switching products.
     useEffect(() => {
         mutation.reset();
-    }, [productId, mutation]);
+    }, [productId]);
 
     const value = useMemo(
         () => ({
@@ -53,11 +56,11 @@ const ProductAIAssistantProvider = ({ children, productId }: ProductAIAssistantP
                 payload: AiRequestPayload,
                 options?: MutateOptions<AiResponse, Error, AiRequestPayload, unknown>
             ) => {
-                mutation.mutate({ productId, question: payload.question } as any, options as any);
+                mutation.mutate(payload, options);
             },
             reset: () => mutation.reset(),
         }),
-        [mutation.data, mutation.isPending, mutation.error, productId, mutation]
+        [mutation.data, mutation.isPending, mutation.error]
     );
 
     return <Context.Provider value={value}>{children}</Context.Provider>;

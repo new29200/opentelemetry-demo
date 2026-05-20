@@ -29,12 +29,20 @@ const resolvers = {
 
       return new Promise((resolve, reject) => {
         cartClient.getCart({ user_id: userId }, (err, response) => {
-          if (err) reject(err);
-          else resolve(response);
+          if (err) return reject(err);
+
+          resolve({
+            userId: response.user_id,
+            items: response.items.map((item) => ({
+              productId: item.product_id,
+              quantity: item.quantity,
+            })),
+          });
         });
       });
     },
   },
+
   Mutation: {
     addItem: async (_, { userId, item }, context) => {
       initGrpcClient(context.cartServiceAddr);
@@ -49,19 +57,20 @@ const resolvers = {
             },
           },
           (err) => {
-            if (err) reject(err);
-            else resolve(true);
+            if (err) return reject(err);
+            resolve(true);
           }
         );
       });
     },
+
     emptyCart: async (_, { userId }, context) => {
       initGrpcClient(context.cartServiceAddr);
 
       return new Promise((resolve, reject) => {
         cartClient.emptyCart({ user_id: userId }, (err) => {
-          if (err) reject(err);
-          else resolve(true);
+          if (err) return reject(err);
+          resolve(true);
         });
       });
     },

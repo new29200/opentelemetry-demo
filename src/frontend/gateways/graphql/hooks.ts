@@ -9,40 +9,41 @@ import {
   GET_REVIEWS,
   GET_CURRENCIES,
   GET_ADS,
-  GET_RECOMMENDATIONS,
+  LIST_RECOMMENDATIONS,
   GET_AVERAGE_REVIEW_SCORE,
   GET_PRODUCT,
-  GET_SHIPPING_COST,
+  SEARCH_PRODUCTS,
+  GET_QUOTE,
+  ASK_PRODUCT_AI_ASSISTANT,
 } from './queries';
 import {
-  ADD_TO_CART,
+  ADD_ITEM,
   EMPTY_CART,
   PLACE_ORDER,
-  ASK_PRODUCT_AI_ASSISTANT,
+  SHIP_ORDER,
 } from './mutations';
 
 // QUERIES (récupération de données)
 
-export function useListProducts(currencyCode: string) {
+export function useListProducts() {
   return useQuery({
-    queryKey: ['products', currencyCode],
+    queryKey: ['products'],
     queryFn: async () => {
       const result = await apolloClient.query({
         query: GET_PRODUCTS,
-        variables: { currencyCode },
       });
       return result.data.listProducts;
     },
   });
 }
 
-export function useGetCart(userId: string, currencyCode: string) {
+export function useGetCart(userId: string) {
   return useQuery({
-    queryKey: ['cart', userId, currencyCode],
+    queryKey: ['cart', userId],
     queryFn: async () => {
       const result = await apolloClient.query({
         query: GET_CART,
-        variables: { userId, currencyCode },
+        variables: { userId },
       });
       return result.data.getCart;
     },
@@ -103,53 +104,79 @@ export function useGetAds(contextKeys: string[]) {
   });
 }
 
-export function useGetRecommendations(productIds: string[], currencyCode: string, sessionId: string) {
+export function useListRecommendations(userId: string, productIds: string[]) {
   return useQuery({
-    queryKey: ['recommendations', productIds, 'selectedCurrency', currencyCode],
+    queryKey: ['recommendations', userId, productIds],
     queryFn: async () => {
       const result = await apolloClient.query({
-        query: GET_RECOMMENDATIONS,
-        variables: { productIds, currencyCode, sessionId },
+        query: LIST_RECOMMENDATIONS,
+        variables: { userId, productIds },
       });
-      return result.data.getRecommendations;
+      return result.data.listRecommendations;
     },
   });
 }
 
-export function useGetProduct(productId: string, currencyCode: string) {
+export function useGetProduct(id: string) {
   return useQuery({
-    queryKey: ['product', productId, currencyCode],
+    queryKey: ['product', id],
     queryFn: async () => {
       const result = await apolloClient.query({
         query: GET_PRODUCT,
-        variables: { productId, currencyCode },
+        variables: { id },
       });
       return result.data.getProduct;
     },
   });
 }
 
-export function useGetShippingCost(itemList: any[], currencyCode: string, address: any) {
+export function useSearchProducts(query: string) {
   return useQuery({
-    queryKey: ['shippingCost', itemList, currencyCode, address],
+    queryKey: ['searchProducts', query],
     queryFn: async () => {
       const result = await apolloClient.query({
-        query: GET_SHIPPING_COST,
-        variables: { itemList, currencyCode, address },
+        query: SEARCH_PRODUCTS,
+        variables: { query },
       });
-      return result.data.getShippingCost;
+      return result.data.searchProducts;
+    },
+  });
+}
+
+export function useGetQuote(address: any, items: any[]) {
+  return useQuery({
+    queryKey: ['quote', address, items],
+    queryFn: async () => {
+      const result = await apolloClient.query({
+        query: GET_QUOTE,
+        variables: { address, items },
+      });
+      return result.data.getQuote;
+    },
+  });
+}
+
+export function useAskProductAIAssistant(productId: string, question: string) {
+  return useQuery({
+    queryKey: ['askProductAIAssistant', productId, question],
+    queryFn: async () => {
+      const result = await apolloClient.query({
+        query: ASK_PRODUCT_AI_ASSISTANT,
+        variables: { productId, question },
+      });
+      return result.data.askProductAIAssistant;
     },
   });
 }
 
 // MUTATIONS (modifications de données)
 
-export function useAddToCart() {
+export function useAddItem() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (variables: any) =>
       apolloClient.mutate({
-        mutation: ADD_TO_CART,
+        mutation: ADD_ITEM,
         variables,
       }),
     onSuccess: () => {
@@ -186,11 +213,11 @@ export function usePlaceOrder() {
   });
 }
 
-export function useAskProductAIAssistant() {
+export function useShipOrder() {
   return useMutation({
     mutationFn: (variables: any) =>
       apolloClient.mutate({
-        mutation: ASK_PRODUCT_AI_ASSISTANT,
+        mutation: SHIP_ORDER,
         variables,
       }),
   });

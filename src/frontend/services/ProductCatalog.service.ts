@@ -1,38 +1,62 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-import ProductCatalogGateway from '../gateways/rpc/ProductCatalog.gateway';
-import CurrencyGateway from '../gateways/rpc/Currency.gateway';
-import { Money } from '../protos/demo';
+import { apolloClient } from '../gateways/graphql/client';
+import { GET_PRODUCTS, GET_PRODUCT } from '../gateways/graphql/queries';
+import { gql } from '@apollo/client';
+
+const CONVERT_CURRENCY = gql`
+  query Convert($from: MoneyInput!, $toCode: String!) {
+    convert(from: $from, toCode: $toCode) {
+      currencyCode
+      units
+      nanos
+    }
+  }
+`;
 
 const defaultCurrencyCode = 'USD';
 
 const ProductCatalogService = () => ({
-  async getProductPrice(price: Money, currencyCode: string) {
-    return !!currencyCode && currencyCode !== defaultCurrencyCode
-      ? await CurrencyGateway.convert(price, currencyCode)
-      : price;
+  async convertPrice(price: any, currencyCode: string) {
+    if (!currencyCode || currencyCode === defaultCurrencyCode) {
+      return price;
+    }
+
+    const result = await apolloClient.query({
+      query: CONVERT_CURRENCY,
+      variables: {
+        from: price,
+        toCode: currencyCode
+      },
+    });
+    return result.data.convert;
   },
+
   async listProducts(currencyCode = 'USD') {
-    const { products: productList } = await ProductCatalogGateway.listProducts();
+    const result = await apolloClient.query({
+      query: GET_PRODUCTS,
+    });
 
+    const productList = result.data.listProducts;
     return Promise.all(
-      productList.map(async product => {
-        const priceUsd = await this.getProductPrice(product.priceUsd!, currencyCode);
-
-        return {
-          ...product,
-          priceUsd,
-        };
-      })
+      productList.map(async (product: any) => ({
+        ...product,
+        priceUsd: await this.convertPrice(product.priceUsd, currencyCode),
+      }))
     );
   },
-  async getProduct(id: string, currencyCode = 'USD') {
-    const product = await ProductCatalogGateway.getProduct(id);
 
+  async getProduct(id: string, currencyCode = 'USD') {
+    const result = await apolloClient.query({
+      query: GET_PRODUCT,
+      variables: { id },
+    });
+
+    const product = result.data.getProduct;
     return {
       ...product,
-      priceUsd: await this.getProductPrice(product.priceUsd!, currencyCode),
+      priceUsd: await this.convertPrice(product.priceUsd, currencyCode),
     };
   },
 });

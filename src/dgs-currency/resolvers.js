@@ -29,8 +29,9 @@ const resolvers = {
 
       return new Promise((resolve, reject) => {
         currencyClient.getSupportedCurrencies({}, (err, response) => {
-          if (err) reject(err);
-          else resolve(response.currency_codes);
+          if (err) return reject(err);
+
+          resolve(response.currency_codes);
         });
       });
     },
@@ -49,8 +50,13 @@ const resolvers = {
             to_code: toCode,
           },
           (err, response) => {
-            if (err) reject(err);
-            else resolve(response);
+            if (err) return reject(err);
+
+            resolve({
+              currencyCode: response.currency_code,
+              units: Number(response.units),
+              nanos: response.nanos,
+            });
           }
         );
       });

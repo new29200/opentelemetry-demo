@@ -6,12 +6,15 @@ import { gql } from '@apollo/client';
 
 // Requête pour récupérer les produits
 export const GET_PRODUCTS = gql`
-  query ListProducts($currencyCode: String!) {
-    listProducts(currencyCode: $currencyCode) {
+  query ListProducts {
+    listProducts {
       id
       name
       description
+      picture
+      categories
       priceUsd {
+        currencyCode
         units
         nanos
       }
@@ -21,8 +24,8 @@ export const GET_PRODUCTS = gql`
 
 // Requête pour récupérer le panier
 export const GET_CART = gql`
-  query GetCart($userId: String!, $currencyCode: String!) {
-    getCart(userId: $userId, currencyCode: $currencyCode) {
+  query GetCart($userId: String!) {
+    getCart(userId: $userId) {
       userId
       items {
         productId
@@ -36,11 +39,9 @@ export const GET_CART = gql`
 export const GET_REVIEWS = gql`
   query GetProductReviews($productId: String!) {
     getProductReviews(productId: $productId) {
-      id
-      productId
-      displayName
-      rating
-      text
+      username
+      description
+      score
     }
   }
 `;
@@ -54,26 +55,15 @@ export const GET_CURRENCIES = gql`
 export const GET_ADS = gql`
   query GetAds($contextKeys: [String!]!) {
     getAds(contextKeys: $contextKeys) {
-      id
       redirectUrl
       text
     }
   }
 `;
 
-export const GET_RECOMMENDATIONS = gql`
-  query GetRecommendations($productIds: [String!]!, $currencyCode: String!, $sessionId: String!) {
-    getRecommendations(productIds: $productIds, currencyCode: $currencyCode, sessionId: $sessionId) {
-      id
-      name
-      description
-      picture
-      priceUsd {
-        currencyCode
-        units
-        nanos
-      }
-    }
+export const LIST_RECOMMENDATIONS = gql`
+  query ListRecommendations($userId: String!, $productIds: [String!]!) {
+    listRecommendations(userId: $userId, productIds: $productIds)
   }
 `;
 
@@ -84,12 +74,13 @@ export const GET_AVERAGE_REVIEW_SCORE = gql`
 `;
 
 export const GET_PRODUCT = gql`
-  query GetProduct($productId: String!, $currencyCode: String!) {
-    getProduct(productId: $productId, currencyCode: $currencyCode) {
+  query GetProduct($id: String!) {
+    getProduct(id: $id) {
       id
       name
       description
       picture
+      categories
       priceUsd {
         currencyCode
         units
@@ -99,12 +90,35 @@ export const GET_PRODUCT = gql`
   }
 `;
 
-export const GET_SHIPPING_COST = gql`
-  query GetShippingCost($itemList: [CartItemInput!]!, $currencyCode: String!, $address: AddressInput!) {
-    getShippingCost(itemList: $itemList, currencyCode: $currencyCode, address: $address) {
+export const SEARCH_PRODUCTS = gql`
+  query SearchProducts($query: String!) {
+    searchProducts(query: $query) {
+      id
+      name
+      description
+      picture
+      categories
+      priceUsd {
+        currencyCode
+        units
+        nanos
+      }
+    }
+  }
+`;
+
+export const GET_QUOTE = gql`
+  query GetQuote($address: AddressInput!, $items: [CartItemInput!]!) {
+    getQuote(address: $address, items: $items) {
       currencyCode
       units
       nanos
     }
+  }
+`;
+
+export const ASK_PRODUCT_AI_ASSISTANT = gql`
+  query AskProductAIAssistant($productId: String!, $question: String!) {
+    askProductAIAssistant(productId: $productId, question: $question)
   }
 `;

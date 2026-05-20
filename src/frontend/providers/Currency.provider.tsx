@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createContext, useCallback, useContext, useMemo, useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import ApiGateway from '../gateways/Api.gateway';
 import SessionGateway from '../gateways/Session.gateway';
-import { useGetSupportedCurrencies } from '../gateways/graphql/hooks';
 
 const { currencyCode } = SessionGateway.getSession();
 
@@ -26,7 +27,10 @@ interface IProps {
 export const useCurrency = () => useContext(Context);
 
 const CurrencyProvider = ({ children }: IProps) => {
-  const { data: currencyCodeListUnsorted = [] } = useGetSupportedCurrencies();
+  const { data: currencyCodeListUnsorted = [] } = useQuery({
+    queryKey: ['currency'],
+    queryFn: ApiGateway.getSupportedCurrencyList
+  });
   const [selectedCurrency, setSelectedCurrency] = useState<string>('');
 
   useEffect(() => {
@@ -41,12 +45,12 @@ const CurrencyProvider = ({ children }: IProps) => {
   const currencyCodeList = currencyCodeListUnsorted.sort();
 
   const value = useMemo(
-    () => ({
-      currencyCodeList,
-      selectedCurrency,
-      setSelectedCurrency: onSelectCurrency,
-    }),
-    [currencyCodeList, selectedCurrency, onSelectCurrency]
+      () => ({
+        currencyCodeList,
+        selectedCurrency,
+        setSelectedCurrency: onSelectCurrency,
+      }),
+      [currencyCodeList, selectedCurrency, onSelectCurrency]
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

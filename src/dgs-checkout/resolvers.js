@@ -23,7 +23,7 @@ const initGrpcClient = (checkoutServiceAddr) => {
 };
 
 const resolvers = {
-  Query: {
+  Mutation: {
     placeOrder: async (_, { userId, userCurrency, address, email, creditCard }, context) => {
       initGrpcClient(context.checkoutServiceAddr);
 
@@ -39,7 +39,7 @@ const resolvers = {
               country: address.country,
               zip_code: address.zipCode,
             },
-            email: email,
+            email,
             credit_card: {
               credit_card_number: creditCard.creditCardNumber,
               credit_card_cvv: creditCard.creditCardCvv,
@@ -48,8 +48,37 @@ const resolvers = {
             },
           },
           (err, response) => {
-            if (err) reject(err);
-            else resolve(response.order);
+            if (err) return reject(err);
+
+            const order = response.order;
+
+            resolve({
+              orderId: order.order_id,
+              shippingTrackingId: order.shipping_tracking_id,
+              shippingAddress: {
+                streetAddress: order.shipping_address.street_address,
+                city: order.shipping_address.city,
+                state: order.shipping_address.state,
+                country: order.shipping_address.country,
+                zipCode: order.shipping_address.zip_code,
+              },
+              shippingCost: {
+                currencyCode: order.shipping_cost.currency_code,
+                units: order.shipping_cost.units,
+                nanos: order.shipping_cost.nanos,
+              },
+              items: order.items.map((orderItem) => ({
+                item: {
+                  productId: orderItem.item.product_id,
+                  quantity: orderItem.item.quantity,
+                },
+                cost: {
+                  currencyCode: orderItem.cost.currency_code,
+                  units: orderItem.cost.units,
+                  nanos: orderItem.cost.nanos,
+                },
+              })),
+            });
           }
         );
       });

@@ -19,7 +19,11 @@ const initGrpcClient = (shippingServiceAddr) => {
 
   const proto = grpc.loadPackageDefinition(packageDefinition);
   const ShippingService = proto.oteldemo.ShippingService;
-  shippingClient = new ShippingService(shippingServiceAddr, grpc.credentials.createInsecure());
+
+  shippingClient = new ShippingService(
+    shippingServiceAddr,
+    grpc.credentials.createInsecure()
+  );
 };
 
 const convertAddress = (address) => ({
@@ -36,6 +40,12 @@ const convertItems = (items) =>
     quantity: item.quantity,
   }));
 
+const mapMoney = (money) => ({
+  currencyCode: money.currency_code,
+  units: Number(money.units),
+  nanos: money.nanos,
+});
+
 const resolvers = {
   Query: {
     getQuote: async (_, { address, items }, context) => {
@@ -48,13 +58,15 @@ const resolvers = {
             items: convertItems(items),
           },
           (err, response) => {
-            if (err) reject(err);
-            else resolve(response.cost_usd);
+            if (err) return reject(err);
+
+            resolve(mapMoney(response.cost_usd));
           }
         );
       });
     },
   },
+
   Mutation: {
     shipOrder: async (_, { address, items }, context) => {
       initGrpcClient(context.shippingServiceAddr);
@@ -66,8 +78,9 @@ const resolvers = {
             items: convertItems(items),
           },
           (err, response) => {
-            if (err) reject(err);
-            else resolve(response.tracking_id);
+            if (err) return reject(err);
+
+            resolve(response.tracking_id);
           }
         );
       });
