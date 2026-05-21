@@ -3,27 +3,10 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apolloClient } from './client';
-import {
-  GET_PRODUCTS,
-  GET_CART,
-  GET_REVIEWS,
-  GET_CURRENCIES,
-  GET_ADS,
-  LIST_RECOMMENDATIONS,
-  GET_AVERAGE_REVIEW_SCORE,
-  GET_PRODUCT,
-  SEARCH_PRODUCTS,
-  GET_QUOTE,
-  ASK_PRODUCT_AI_ASSISTANT,
-} from './queries';
-import {
-  ADD_ITEM,
-  EMPTY_CART,
-  PLACE_ORDER,
-  SHIP_ORDER,
-} from './mutations';
+import {GET_PRODUCTS, GET_CART, GET_REVIEWS, GET_CURRENCIES, GET_ADS, LIST_RECOMMENDATIONS, GET_AVERAGE_REVIEW_SCORE, GET_PRODUCT, SEARCH_PRODUCTS, GET_QUOTE, ASK_PRODUCT_AI_ASSISTANT} from './queries';
+import { ADD_ITEM, EMPTY_CART, PLACE_ORDER, SHIP_ORDER} from './mutations';
 
-// QUERIES (récupération de données)
+// QUERIES 
 
 export function useListProducts() {
   return useQuery({
@@ -169,7 +152,7 @@ export function useAskProductAIAssistant(productId: string, question: string) {
   });
 }
 
-// MUTATIONS (modifications de données)
+// MUTATIONS 
 
 export function useAddItem() {
   const queryClient = useQueryClient();

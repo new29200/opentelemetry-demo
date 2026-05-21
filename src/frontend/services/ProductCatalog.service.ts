@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { apolloClient } from '../gateways/graphql/client';
-import { GET_PRODUCTS, GET_PRODUCT } from '../gateways/graphql/queries';
 import { gql } from '@apollo/client';
+import ApiGateway from '../gateways/Api.gateway';
 
 const CONVERT_CURRENCY = gql`
   query Convert($from: MoneyInput!, $toCode: String!) {
@@ -34,11 +34,7 @@ const ProductCatalogService = () => ({
   },
 
   async listProducts(currencyCode = 'USD') {
-    const result = await apolloClient.query({
-      query: GET_PRODUCTS,
-    });
-
-    const productList = result.data.listProducts;
+    const productList = await ApiGateway.listProducts(currencyCode);
     return Promise.all(
       productList.map(async (product: any) => ({
         ...product,
@@ -48,12 +44,7 @@ const ProductCatalogService = () => ({
   },
 
   async getProduct(id: string, currencyCode = 'USD') {
-    const result = await apolloClient.query({
-      query: GET_PRODUCT,
-      variables: { id },
-    });
-
-    const product = result.data.getProduct;
+    const product = await ApiGateway.getProduct(id, currencyCode);
     return {
       ...product,
       priceUsd: await this.convertPrice(product.priceUsd, currencyCode),

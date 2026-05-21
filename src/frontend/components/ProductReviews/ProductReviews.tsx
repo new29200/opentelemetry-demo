@@ -43,6 +43,7 @@ const ProductReviews = () => {
 
         const order = raw
             .map((p, i) => ({ i, frac: p - Math.floor(p) }))
+            .slice()
             .sort((a, b) => b.frac - a.frac);
 
         const final = floored.slice();
