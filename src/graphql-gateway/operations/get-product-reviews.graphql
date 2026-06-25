@@ -1,0 +1,7 @@
+query GetProductReviews($productId: String!) {
+  getProductReviews(productId: $productId) {
+    username
+    description
+    score
+  }
+}

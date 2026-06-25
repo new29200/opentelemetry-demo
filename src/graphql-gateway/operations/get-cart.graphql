@@ -1,0 +1,9 @@
+query GetCart($userId: String!) {
+  getCart(userId: $userId) {
+    userId
+    items {
+      productId
+      quantity
+    }
+  }
+}

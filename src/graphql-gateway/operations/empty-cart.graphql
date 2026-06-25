@@ -1,0 +1,3 @@
+mutation EmptyCart($userId: String!) {
+  emptyCart(userId: $userId)
+}

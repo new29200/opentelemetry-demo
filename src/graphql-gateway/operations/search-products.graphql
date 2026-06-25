@@ -1,0 +1,14 @@
+query SearchProducts($query: String!) {
+  searchProducts(query: $query) {
+    id
+    name
+    description
+    picture
+    categories
+    priceUsd {
+      currencyCode
+      units
+      nanos
+    }
+  }
+}

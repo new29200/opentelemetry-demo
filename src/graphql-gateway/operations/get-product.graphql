@@ -1,0 +1,14 @@
+query GetProduct($id: String!) {
+  getProduct(id: $id) {
+    id
+    name
+    description
+    picture
+    categories
+    priceUsd {
+      currencyCode
+      units
+      nanos
+    }
+  }
+}

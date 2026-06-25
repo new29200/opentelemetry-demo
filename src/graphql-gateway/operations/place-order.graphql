@@ -1,0 +1,41 @@
+mutation PlaceOrder(
+  $userId: String!
+  $userCurrency: String!
+  $address: AddressInput!
+  $email: String!
+  $creditCard: CreditCardInfoInput!
+) {
+  placeOrder(
+    userId: $userId
+    userCurrency: $userCurrency
+    address: $address
+    email: $email
+    creditCard: $creditCard
+  ) {
+    orderId
+    shippingTrackingId
+    shippingAddress {
+      streetAddress
+      city
+      state
+      country
+      zipCode
+    }
+    shippingCost {
+      currencyCode
+      units
+      nanos
+    }
+    items {
+      item {
+        productId
+        quantity
+      }
+      cost {
+        currencyCode
+        units
+        nanos
+      }
+    }
+  }
+}

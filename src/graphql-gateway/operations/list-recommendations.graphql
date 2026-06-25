@@ -1,0 +1,3 @@
+query ListRecommendations($userId: String!, $productIds: [String!]!) {
+  listRecommendations(userId: $userId, productIds: $productIds)
+}
